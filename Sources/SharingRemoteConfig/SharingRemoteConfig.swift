@@ -6,9 +6,13 @@ import Foundation
 import Dependencies
 
 
-public final class RemoteConfigValueKey: SharedReaderKey {
+public struct RemoteConfigValueKey: SharedReaderKey {
+  public struct InternalID: Hashable {
+    var key: String
+    var client: RemoteConfig<URLSession>
+  }
   public typealias Value = String?
-  public var id: RemoteConfig<URLSession> { client }
+  public var id: InternalID { .init(key: key, client: client) }
   public let key: String
   private let client: RemoteConfig<URLSession>
   private let store: DefaultRemoteConfigStore
@@ -20,17 +24,11 @@ public final class RemoteConfigValueKey: SharedReaderKey {
     self.client = client
   }
 
-  deinit {
-    store.tasks.withLock { tasks in
-      tasks[client]?.cancel()
-    }
-  }
-
   public func load(
     context: Sharing.LoadContext<Value>,
     continuation: Sharing.LoadContinuation<Value>
   ) {
-    store.configs.withLockIfAvailable {
+    store.configs.withLock {
       continuation.resume(returning: $0[client]?[key])
     }
   }
@@ -39,7 +37,7 @@ public final class RemoteConfigValueKey: SharedReaderKey {
     context: Sharing.LoadContext<Value>,
     subscriber: Sharing.SharedSubscriber<Value>
   ) -> Sharing.SharedSubscription {
-    store.tasks.withLockIfAvailable { tasks in
+    store.tasks.withLock { tasks in
       guard tasks[client] == nil || tasks[client]?.isCancelled == true else { return }
       tasks[client] = Task {
         do {
@@ -47,7 +45,7 @@ public final class RemoteConfigValueKey: SharedReaderKey {
             do {
               _ = try result.get()
               let result = try await client.fetch()
-              store.configs.withLockIfAvailable {
+              store.configs.withLock {
                 $0[client] = result.entries
               }
               subscriber.yield(result.entries[key])
@@ -61,8 +59,7 @@ public final class RemoteConfigValueKey: SharedReaderKey {
       }
     }
 
-    return SharedSubscription { [weak self] in
-      guard let self else { return }
+    return SharedSubscription {
       store.tasks.withLock { tasks in
         tasks[client]?.cancel()
       }
@@ -70,7 +67,7 @@ public final class RemoteConfigValueKey: SharedReaderKey {
   }
 }
 
-public final class RemoteConfigKey: SharedReaderKey {
+public struct RemoteConfigKey: SharedReaderKey {
   public typealias Value = [String: String]
   public var id: RemoteConfig<URLSession> { client }
   private let client: RemoteConfig<URLSession>
@@ -80,12 +77,6 @@ public final class RemoteConfigKey: SharedReaderKey {
     @Dependency(\.defaultRemoteConfigStore) var store
     self.store = store
     self.client = client
-  }
-
-  deinit {
-    store.tasks.withLock { tasks in
-      tasks[client]?.cancel()
-    }
   }
 
   public func load(
@@ -101,7 +92,7 @@ public final class RemoteConfigKey: SharedReaderKey {
     context: Sharing.LoadContext<Value>,
     subscriber: Sharing.SharedSubscriber<Value>
   ) -> Sharing.SharedSubscription {
-    store.tasks.withLockIfAvailable { tasks in
+    store.tasks.withLock { tasks in
       guard tasks[client] == nil || tasks[client]?.isCancelled == true else { return }
       tasks[client] = Task {
         do {
@@ -109,7 +100,7 @@ public final class RemoteConfigKey: SharedReaderKey {
             do {
               _ = try result.get()
               let result = try await client.fetch()
-              store.configs.withLockIfAvailable {
+              store.configs.withLock {
                 $0[client] = result.entries
               }
               subscriber.yield(result.entries)
@@ -123,8 +114,7 @@ public final class RemoteConfigKey: SharedReaderKey {
       }
     }
 
-    return SharedSubscription { [weak self] in
-      guard let self else { return }
+    return SharedSubscription {
       store.tasks.withLock { tasks in
         tasks[client]?.cancel()
       }
