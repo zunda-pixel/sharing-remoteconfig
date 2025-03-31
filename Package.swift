@@ -26,9 +26,5 @@ let package = Package(
         .product(name: "Sharing", package: "swift-sharing"),
       ]
     ),
-    .testTarget(
-      name: "SharingRemoteConfigTests",
-      dependencies: ["SharingRemoteConfig"]
-    ),
   ]
 )
