@@ -14,7 +14,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(url: "https://github.com/zunda-pixel/firebase-swift", from: "1.0.4"),
+    .package(url: "https://github.com/zunda-pixel/firebase-swift", from: "1.0.5"),
     .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.3.3"),
   ],
   targets: [

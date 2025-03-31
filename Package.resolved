@@ -1,5 +1,5 @@
 {
-  "originHash" : "2b6f04c2895dd96024ce4acfdb6ced20ed610ebcb2f893e93eceac470514cfae",
+  "originHash" : "9a889cc6341f4998893ce97f347a4e183c018441ff16af290178eafefc9a004a",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/zunda-pixel/firebase-swift",
       "state" : {
-        "revision" : "bc64c9044d96650f30d89261bc0990e9a9fc878e",
-        "version" : "1.0.4"
+        "revision" : "b86e10b73b447dc5b6a52b852ad19ab51be7be7d",
+        "version" : "1.0.5"
       }
     },
     {
