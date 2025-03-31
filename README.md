@@ -6,10 +6,10 @@ SharingFirebase uses [firebase-swift](https://github.com/zunda-pixel/firebase-sw
 
 ```swift
 struct ContentView: View {
-  @SharedReader(.remoteConfig("parameterBool", client: .sampleProject)) var parameterBool: String?
-  @SharedReader(.remoteConfig("parameterInt", client: .sampleProject)) var parameterInt: String?
-  @SharedReader(.remoteConfig("parameterString", client: .sampleProject)) var parameterString: String?
-  @SharedReader(.remoteConfig("parameterJson", client: .sampleProject)) var parameterJson: String?
+  @SharedReader(.remoteConfig("parameterBool")) var parameterBool: String?
+  @SharedReader(.remoteConfig("parameterInt")) var parameterInt: String?
+  @SharedReader(.remoteConfig("parameterString")) var parameterString: String?
+  @SharedReader(.remoteConfig("parameterJson")) var parameterJson: String?
   
   var body: some View {
     VStack {
@@ -24,6 +24,13 @@ struct ContentView: View {
 #Preview {
   ContentView()
     .frame(maxWidth: 500, maxHeight: 500)
+}
+
+extension SharedReaderKey {
+  static func remoteConfig(_ key: String) -> Self
+  where Self == RemoteConfigValueKey {
+    RemoteConfigValueKey(key: key, client: .sampleProject)
+  }
 }
 
 extension RemoteConfigClient<URLSession> {
