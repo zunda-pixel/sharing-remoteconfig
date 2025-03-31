@@ -19,7 +19,7 @@ public struct RemoteConfigValueKey: SharedReaderKey {
   private let client: RemoteConfigClient<URLSession>
   private let store: DefaultRemoteConfigStore
   
-  init(key: String, client: RemoteConfigClient<URLSession>) {
+  public init(key: String, client: RemoteConfigClient<URLSession>) {
     @Dependency(\.defaultRemoteConfigStore) var store
     self.key = key
     self.store = store
