@@ -37,6 +37,7 @@ public struct RemoteConfigValueKey: SharedReaderKey {
     context: Sharing.LoadContext<Value>,
     subscriber: Sharing.SharedSubscriber<Value>
   ) -> Sharing.SharedSubscription {
+    subscriber.yieldReturningInitialValue()
     store.subscribers.withLock {
       $0[.init(remoteConfig: client, key: key)] = subscriber
     }
