@@ -1,9 +1,13 @@
+import Dependencies
+import Foundation
+import HTTPClient
+import RemoteConfig
 import Sharing
 import Synchronization
-import RemoteConfig
-import HTTPClient
-import Foundation
-import Dependencies
+
+#if canImport(FoundationNetworking)
+  import FoundationNetworking
+#endif
 
 public struct ProjectRemoteConfigKeyID: Hashable, Sendable {
   var remoteConfig: RemoteConfigClient<URLSession>
@@ -19,7 +23,7 @@ public struct RemoteConfigValueKey: SharedReaderKey {
   public let key: String
   private let client: RemoteConfigClient<URLSession>
   private let store: DefaultRemoteConfigStore
-  
+
   public init(key: String, client: RemoteConfigClient<URLSession>) {
     @Dependency(\.defaultRemoteConfigStore) var store
     self.key = key
@@ -33,7 +37,7 @@ public struct RemoteConfigValueKey: SharedReaderKey {
   ) {
     continuation.resumeReturningInitialValue()
   }
-  
+
   public func subscribe(
     context: Sharing.LoadContext<Value>,
     subscriber: Sharing.SharedSubscriber<Value>
