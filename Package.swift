@@ -12,7 +12,7 @@ let package = Package(
     .library(
       name: "SharingRemoteConfig",
       targets: ["SharingRemoteConfig"]
-    ),
+    )
   ],
   dependencies: [
     .package(url: "https://github.com/zunda-pixel/firebase-swift", from: "1.0.5"),
@@ -25,6 +25,6 @@ let package = Package(
         .product(name: "RemoteConfig", package: "firebase-swift"),
         .product(name: "Sharing", package: "swift-sharing"),
       ]
-    ),
+    )
   ]
 )
