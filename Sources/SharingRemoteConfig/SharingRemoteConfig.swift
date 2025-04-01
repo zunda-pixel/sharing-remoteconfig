@@ -11,9 +11,10 @@ public struct ProjectRemoteConfigKeyID: Hashable, Sendable {
 }
 
 public struct RemoteConfigValueKey: SharedReaderKey {
+  public typealias ID = ProjectRemoteConfigKeyID
   public typealias Value = String?
-  public var id: ProjectRemoteConfigKeyID {
-    ProjectRemoteConfigKeyID(remoteConfig: client, key: key)
+  public var id: ID {
+    ID(remoteConfig: client, key: key)
   }
   public let key: String
   private let client: RemoteConfigClient<URLSession>
@@ -37,6 +38,7 @@ public struct RemoteConfigValueKey: SharedReaderKey {
     context: Sharing.LoadContext<Value>,
     subscriber: Sharing.SharedSubscriber<Value>
   ) -> Sharing.SharedSubscription {
+    subscriber.yieldReturningInitialValue()
     store.subscribers.withLock {
       $0[.init(remoteConfig: client, key: key)] = subscriber
     }
@@ -92,7 +94,7 @@ enum DefaultRemoteConfigStoreKey: DependencyKey {
 
 public final class DefaultRemoteConfigStore: Sendable {
   let tasks = Mutex<[RemoteConfigClient<URLSession>: Task<Void, Never>]>([:])
-  let subscribers: Mutex<[ProjectRemoteConfigKeyID: SharedSubscriber<String?>]> = .init([:])
+  let subscribers: Mutex<[RemoteConfigValueKey.ID: SharedSubscriber<String?>]> = .init([:])
 }
 
 extension DependencyValues {

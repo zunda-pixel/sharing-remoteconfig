@@ -6,17 +6,30 @@ SharingFirebase uses [firebase-swift](https://github.com/zunda-pixel/firebase-sw
 
 ```swift
 struct ContentView: View {
-  @SharedReader(.remoteConfig("parameterBool")) var parameterBool: String?
-  @SharedReader(.remoteConfig("parameterInt")) var parameterInt: String?
+  @SharedReader(.remoteConfig("parameterBool")) var parameterBoolString: String?
+  @SharedReader(.remoteConfig("parameterInt")) var parameterIntString: String?
   @SharedReader(.remoteConfig("parameterString")) var parameterString: String?
-  @SharedReader(.remoteConfig("parameterJson")) var parameterJson: String?
+  @SharedReader(.remoteConfig("parameterJson")) var parameterJsonString: String?
+  
+  var parameterInt: Int? {
+    parameterIntString.flatMap { Int($0) }
+  }
+  
+  var parameterBool: Bool? {
+    parameterBoolString.flatMap { try? JSONDecoder().decode(Bool.self, from: Data($0.utf8)) }
+  }
+  
+  var parameterJson: User? {
+    parameterJsonString.flatMap { try? JSONDecoder().decode(User.self, from: Data($0.utf8)) }
+  }
   
   var body: some View {
     VStack {
-      Text(parameterBool ?? "Nothing")
-      Text(parameterString ?? "Nothing")
-      Text(parameterInt ?? "Nothing")
-      Text(parameterJson ?? "Nothing")
+      Text("String: \(parameterString ?? "Nothing")")
+      Text("Int: \(parameterInt?.description ?? "Nothing")")
+      Text("Bool: \(parameterBool?.description ?? "Nothing")")
+      Text("User.name: \(parameterJson?.name ?? "Nothing")")
+      Text("User.age: \(parameterJson?.age.description ?? "Nothing")")
     }
   }
 }
@@ -24,6 +37,11 @@ struct ContentView: View {
 #Preview {
   ContentView()
     .frame(maxWidth: 500, maxHeight: 500)
+}
+
+struct User: Decodable {
+  var name: String
+  var age: Int
 }
 
 extension SharedReaderKey {
