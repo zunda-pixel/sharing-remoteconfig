@@ -38,6 +38,34 @@ public struct RemoteConfigValueKey: SharedReaderKey {
     continuation.resumeReturningInitialValue()
   }
 
+  private func canceAllClientTask(_ error: any Error) {
+    store.subscribers.withLock {
+      for (key, subscriber) in $0 where key.remoteConfig == client {
+        subscriber.yield(throwing: error)
+      }
+    }
+  }
+  
+  private func clientTask() async {
+    do {
+      for try await result in client.realtimeStream() {
+        do {
+          _ = try result.get()
+          let result = try await client.fetch()
+          store.subscribers.withLock {
+            for (key, subscriber) in $0 where key.remoteConfig == client {
+              subscriber.yield(result.entries[key.key])
+            }
+          }
+        } catch {
+          canceAllClientTask(error)
+        }
+      }
+    } catch {
+      canceAllClientTask(error)
+    }
+  }
+  
   public func subscribe(
     context: Sharing.LoadContext<Value>,
     subscriber: Sharing.SharedSubscriber<Value>
@@ -49,31 +77,7 @@ public struct RemoteConfigValueKey: SharedReaderKey {
     store.tasks.withLock { tasks in
       guard tasks[client] == nil || tasks[client]?.isCancelled == true else { return }
       tasks[client] = Task {
-        do {
-          for try await result in client.realtimeStream() {
-            do {
-              _ = try result.get()
-              let result = try await client.fetch()
-              store.subscribers.withLock {
-                for (key, subscriber) in $0 where key.remoteConfig == client {
-                  subscriber.yield(result.entries[key.key])
-                }
-              }
-            } catch {
-              store.subscribers.withLock {
-                for (key, subscriber) in $0 where key.remoteConfig == client {
-                  subscriber.yield(throwing: error)
-                }
-              }
-            }
-          }
-        } catch {
-          store.subscribers.withLock {
-            for (key, subscriber) in $0 where key.remoteConfig == client {
-              subscriber.yield(throwing: error)
-            }
-          }
-        }
+        await clientTask()
       }
     }
 
