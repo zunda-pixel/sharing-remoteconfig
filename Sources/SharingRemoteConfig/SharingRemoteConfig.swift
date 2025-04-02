@@ -45,7 +45,7 @@ public struct RemoteConfigValueKey: SharedReaderKey {
       }
     }
   }
-  
+
   private func clientTask() async {
     do {
       for try await result in client.realtimeStream() {
@@ -66,7 +66,7 @@ public struct RemoteConfigValueKey: SharedReaderKey {
       await clientTask()
     }
   }
-  
+
   public func subscribe(
     context: Sharing.LoadContext<Value>,
     subscriber: Sharing.SharedSubscriber<Value>
