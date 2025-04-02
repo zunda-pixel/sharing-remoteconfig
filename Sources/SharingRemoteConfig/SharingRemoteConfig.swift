@@ -85,25 +85,6 @@ public struct RemoteConfigValueKey: SharedReaderKey {
   }
 }
 
-#if canImport(FoundationNetworking)
-  extension RemoteConfigClient {
-    func realtimeStream() -> AsyncThrowingStream<Result<Never?, any Error>, any Error> {
-      return AsyncThrowingStream { continuation in
-        Task {
-          do {
-            while true {
-              continuation.yield(.success(nil))
-              try await Task.sleep(for: .seconds(60))
-            }
-          } catch {
-            continuation.finish(throwing: error)
-          }
-        }
-      }
-    }
-  }
-#endif
-
 extension SharedReaderKey {
   public static func remoteConfig(_ key: String, client: RemoteConfigClient<URLSession>) -> Self
   where Self == RemoteConfigValueKey {
