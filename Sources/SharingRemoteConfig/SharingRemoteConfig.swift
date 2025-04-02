@@ -62,7 +62,7 @@ public struct RemoteConfigValueKey: SharedReaderKey {
         }
       }
     } catch {
-      canceAllClientTask(error)
+      await clientTask()
     }
   }
   
