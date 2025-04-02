@@ -1,6 +1,6 @@
 # SharingFirebase
 
-SharingFirebase uses [firebase-swift](https://github.com/zunda-pixel/firebase-swift)
+SharingFirebase uses [swift-sharing](https://github.com/pointfreeco/swift-sharing) and [firebase-swift](https://github.com/zunda-pixel/firebase-swift)
 
 ## SharingRemoteConfig
 
