@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "SharingFirebase",
+  name: "SharingRemoteConfig",
   platforms: [
     .macOS(.v15),
     .iOS(.v18),
