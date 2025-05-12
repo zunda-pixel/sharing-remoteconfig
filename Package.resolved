@@ -1,5 +1,5 @@
 {
-  "originHash" : "9646219b043583d93d8209532b8e5921cf192ab0c69a11e5235dfa96348dfe40",
+  "originHash" : "8adcfe0399e7098a627ab5f8e475088419b30ee5fabd5775f1e1498794bf2efb",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-sharing",
       "state" : {
-        "revision" : "732871fabfc6b38fcdff5ad2f7336327dbf78e81",
-        "version" : "2.4.0"
+        "revision" : "75e846ee3159dc75b3a29bfc24b6ce5a557ddca9",
+        "version" : "2.5.2"
       }
     },
     {
