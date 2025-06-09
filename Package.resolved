@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/zunda-pixel/firebase-swift",
       "state" : {
-        "revision" : "680e41f806939a4e54226a6ffe84bb82b6b102c4",
-        "version" : "1.0.6"
+        "revision" : "ead606eb70bde70ef50995a1beb1cbaa7742a122",
+        "version" : "1.0.7"
       }
     },
     {
