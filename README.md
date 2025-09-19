@@ -26,11 +26,11 @@ struct ContentView: View {
   
   var body: some View {
     VStack {
-      Text("String: \(parameterString ?? "Nothing")")
-      Text("Int: \(parameterInt?.description ?? "Nothing")")
-      Text("Bool: \(parameterBool?.description ?? "Nothing")")
-      Text("User.name: \(parameterJson?.name ?? "Nothing")")
-      Text("User.age: \(parameterJson?.age.description ?? "Nothing")")
+      Text("String: \(parameterString!)")
+      Text("Int: \(parameterInt!.description)")
+      Text("Bool: \(parameterBool!.description)")
+      Text("User.name: \(parameterJson!.name)")
+      Text("User.age: \(parameterJson!.age.description)")
     }
   }
 }
